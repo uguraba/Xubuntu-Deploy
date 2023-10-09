@@ -1,0 +1,40 @@
+#!/bin/bash
+
+sudo apt update -y && sudo apt upgrade -y
+
+sudo apt install curl wget gpg -y
+
+sudo sh -c 'echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" > /etc/apt/sources.list.d/vscode.list'
+
+wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
+
+sudo install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg
+
+rm -f packages.microsoft.gpg
+
+sudo curl -o /usr/share/keyrings/syncthing-archive-keyring.gpg https://syncthing.net/release-key.gpg
+
+echo "deb [signed-by=/usr/share/keyrings/syncthing-archive-keyring.gpg] https://apt.syncthing.net/ syncthing stable" | sudo tee /etc/apt/sources.list.d/syncthing.list
+
+echo 'deb http://download.opensuse.org/repositories/home:/manuelschneid3r/xUbuntu_23.04/ /' | sudo tee /etc/apt/sources.list.d/home:manuelschneid3r.list
+
+curl -fsSL https://download.opensuse.org/repositories/home:manuelschneid3r/xUbuntu_23.04/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/home_manuelschneid3r.gpg > /dev/null
+
+wget -qO- https://raw.githubusercontent.com/retorquere/zotero-deb/master/install.sh | sudo bash
+
+sudo apt update -y && sudo apt upgrade -y
+
+flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+
+flatpak install com.discordapp.Discord com.spotify.Client org.videolan.VLC us.zoom.Zoom io.github.mimbrero.WhatsAppDesktop com.opera.Opera com.bitwarden.desktop com.github.IsmaelMartinez.teams_for_linux com.github.micahflee.torbrowser-launcher com.authy.Authy -y
+
+sudo apt install git xfce4-clipman flatpak ubuntu-restricted-extras solaar timeshift apt-transport-https xfce4-notes-plugin texlive-full gparted kde-spectacle syncthing albert virtualbox code menulibre thunar-archive-plugin zotero xarchiver thunar-archive-plugin okular -y
+
+curl --output anaconda.sh https://repo.anaconda.com/archive/Anaconda3-2023.09-0-Linux-x86_64.sh
+chmod +x anaconda.sh 
+bash ./anaconda.sh -b -p $HOME/anaconda 
+
+systemctl --user enable syncthing.service
+systemctl --user start syncthing.service
+
+sudo reboot -h now
